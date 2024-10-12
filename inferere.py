@@ -1,6 +1,6 @@
 import numpy as np 
 import pandas as pd
-import os, glob, torch, cv2
+import os, argparse, torch, cv2
 import torch.nn as nn
 import segmentation_models_pytorch_v2 as smp
 import segmentation_models_pytorch_3branch as smp_3b
@@ -10,9 +10,8 @@ from albumentations.pytorch import ToTensorV2
 
 
 class Infer:
-    def __init__(self, img_path, label_path, save_path, ckpt, rand=0, baseline = None, device = 'cuda'):
+    def __init__(self, img_path, save_path, ckpt, rand=0, baseline = None, device = 'cuda'):
         self.img_path = img_path
-        self.label_path = label_path
         self.save_path = save_path
         self.ckpt = ckpt
         self.rand = rand
@@ -66,12 +65,16 @@ class Infer:
         return X_test, test_set
         
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--img_path', type=str, default='./spalling_data/image/', help='image path')
+    parser.add_argument('--save_path', type=str, default='./double_ckpt', help='predictions save path')
+    parser.add_argument('--ckpt', type=str, default=1e-4, help='checkpoint path')
+    
+    args = parser.parse_args()
     infer = Infer(
-        img_path = './spalling_data/image/',
-        label_path = './spalling_data/label/',
-        save_path = './output/prediction/',
-        ckpt = './ckpt/tileseg_ckpt.pt',
-        rand = 0
+        img_path = args.img_path,
+        save_path = args.save_path,
+        ckpt = args.ckpt,
     )
     infer.infer()
    

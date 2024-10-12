@@ -2,7 +2,7 @@ import numpy as np
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from PIL import Image
-import os, wandb, glob, torch
+import os, wandb, glob, torch, argparse
 import segmentation_models_pytorch_3branch as smp
 from tqdm.auto import tqdm
 import albumentations as A
@@ -155,15 +155,27 @@ class Trainer:
         torch.save(self.model.state_dict(), os.path.join(self.save_path, f"{e}.pth"))
         
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--img_path', type=str, default='./spalling_data/image/', help='image path')
+    parser.add_argument('--label_path', type=str, default='./spalling_data/label/', help='label path')
+    parser.add_argument('--save_path', type=str, default='./double_ckpt', help='checkpoint save path')
+    parser.add_argument('--max_lr', type=float, default=1e-4, help='max learning rate')
+    parser.add_argument('--max_epoch', type=int, default=80, help='max epoch')
+    parser.add_argument('--batch', type=int, default=3, help='batch size')
+    parser.add_argument('--opti_scheme', type=str, default='individual', help='optimization scheme')
+    parser.add_argument('--rand', type=int, default=0, help='random seed')
+    
+    args = parser.parse_args()
+    
     model = Trainer(
-        img_path = './spalling_data/image/',
-        label_path = './spalling_data/label/',
-        save_path = './double_ckpt',
-        max_lr = 1e-4,
-        epochs = 80,
-        batch = 3,
-        opti_scheme = 'direct',
-        rand = 0,
+        img_path = args.img_path,
+        label_path = args.label_path,
+        save_path = args.save_path,
+        max_lr = args.max_lr,
+        epochs = args.max_epoch,
+        batch = args.batch,
+        opti_scheme = args.opti_scheme,
+        rand = args.rand,
         device = 'cuda'
     )
     with wandb.init(project="RPL"):
