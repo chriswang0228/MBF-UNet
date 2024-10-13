@@ -67,8 +67,8 @@ class Infer:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--img_path', type=str, default='./spalling_data/image/', help='image path')
-    parser.add_argument('--save_path', type=str, default='./double_ckpt', help='predictions save path')
-    parser.add_argument('--ckpt', type=str, default=1e-4, help='checkpoint path')
+    parser.add_argument('--save_path', type=str, default='./output', help='predictions save path')
+    parser.add_argument('--ckpt', type=str, default='./ckpt/ckpt.pt', help='checkpoint path')
     
     args = parser.parse_args()
     infer = Infer(
